@@ -1,0 +1,101 @@
+.uploadHeading {
+  font-size: 0.8em;
+  text-align: center;
+  /* Center the heading */
+  margin-bottom: 18px;
+  padding: 1px;
+  border-radius: 5px;
+}
+
+.uploadHeading h1 {
+  margin: 10px;
+}
+
+.sortBtnCover {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.sortBtn {
+  background: linear-gradient(90deg, rgba(0, 123, 255, 0.8), rgba(0, 30, 70, 0.8));
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sortBtn:hover {
+  background: linear-gradient(90deg, rgba(0, 123, 255, 1), rgba(0, 30, 70, 1));
+  transform: translateY(-1px);
+}
+
+.table {
+  width: 100%;
+  border-radius: 10px;
+  border-collapse: collapse;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  text-align: left;
+  /* border: 1px solid #ddd; */
+  border-left: none;
+  border-right: none;
+}
+
+.table th {
+  background-color: #003366;
+  color: white;
+  font-weight: bold;
+}
+
+.table .sortColumn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Align items vertically centered */
+  width: 100%; /* Ensure it takes full width of the th */
+}
+
+.table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table tr:hover {
+  background-color: #e0e0e0;
+}
+
+/* New styles for scrollable table */
+.scrollableTable {
+  padding: 0px 10px;
+  max-height: 450px;
+  /* Set a maximum height */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
+  border: 1px solid #ccc;
+  /* Optional: Add a border */
+  border-radius: 10px;
+  margin: 0px 20px;
+  scrollbar-width: none;
+}
+
+.viewButton {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: 0.5s ease-in-out;
+}
+
+.viewButton img {
+  height: 4vh;
+  width: auto;
+}
+
+.viewButton img:hover {
+  transform: scale(1.2);
+}

@@ -1,0 +1,25 @@
+/* toastStyles.css */
+.custom-toast {
+    background-color: #f8f9fa; /* Light background */
+    color: #333; /* Dark text */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding */
+    z-index: 9999; /* Ensure it appears above other elements */
+}
+
+/* You can also add more styles for specific types of toasts */
+.custom-toast-success {
+    background-color: #d4edda; /* Light green background for success */
+    color: #155724; /* Dark green text */
+}
+
+.custom-toast-error {
+    background-color: #f8d7da; /* Light red background for error */
+    color: #721c24; /* Dark red text */
+}
+
+.custom-toast-warning {
+    background-color: #fff3cd; /* Light yellow background for warning */
+    color: #856404; /* Dark yellow text */
+}

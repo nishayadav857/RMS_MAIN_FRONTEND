@@ -1,0 +1,66 @@
+/* Header styling */
+.header {
+    min-height: 4vh;
+    background-color: #0000B3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 100;
+    font-family: 'Poppins';
+    box-sizing: border-box;
+    position: fixed; /* Changed to fixed for always visible header */
+    top: 0; /* Ensures it sticks to the top */
+    width: 100%; /* Ensures full width */
+}
+
+/* Logo styles */
+.logoImage {
+    width: 75%;
+    height: auto;
+    transform: translateY(0);
+    filter: brightness(0) invert(1);
+}
+
+/* Sliding menu styles */
+.slideMenu {
+    position: fixed;
+    top: 8vh;
+    left: 0;
+    width: 11.5rem;
+    height: calc(100vh - 8vh);
+    background-color: #f0f0f0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.5s ease;
+    padding: 20px;
+}
+
+.slideMenu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.slideMenu ul li {
+    margin: 15px 0;
+}
+
+.slideMenu ul li a {
+    text-decoration: none;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+}
+
+.slideMenu ul li a:hover {
+    color: #007bff;
+}
+
+.slideMenu ul li a:active li {
+    background-color: #0000B3;
+}
+
+.contentShifted {
+    margin-left: 14vw;
+}
