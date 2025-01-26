@@ -55,6 +55,10 @@
   font-weight: bold;
 }
 
+.table td{
+  color: black;
+}
+
 .table .sortColumn {
   display: flex;
   justify-content: space-between;

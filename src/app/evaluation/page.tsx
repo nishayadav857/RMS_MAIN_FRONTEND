@@ -49,7 +49,7 @@ const Evaluation = () => {
             <button className={styles.evaluationButton} onClick={handleButtonClick} disabled={!selectedJD || isLoading}>
                 {isLoading ? "Loading..." : 'Evaluate'}
             </button>
-            {isLoading && <img src="/images/loading.gif" alt="Loading..." />} {/* Loading GIF */}
+            {isLoading && <img src="/images/loading2.gif" alt="Loading..." />} {/* Loading GIF */}
             <ToastContainer />
         </div>
     );

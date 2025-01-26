@@ -131,7 +131,8 @@ const ResumeUploader = () => {
         <div
             style={{
                 backgroundColor: "#ffffff",
-                backgroundImage: "linear-gradient(315deg, #ffffff 0%, #274060 74%)",
+                // backgroundImage: "linear-gradient(315deg, #ffffff 0%, #274060 74%)",
+                background: '#e8eff9',
                 minHeight: "calc(100vh - 8vh)",
                 display: "flex",
                 justifyContent: "center",
@@ -140,8 +141,8 @@ const ResumeUploader = () => {
         >
             <div
                 style={{
-                    background: "#fff",
-                    borderRadius: "10px",
+                    background: "white",
+                    // borderRadius: "10px",
                     padding: "30px",
                     boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
                     maxWidth: "600px",

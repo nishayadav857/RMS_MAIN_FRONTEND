@@ -1,9 +1,12 @@
 /* Evaluation.module.css */
 .evaluationContainer {
+    color: black;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     background-color: #f9f9f9;
+    height: calc(100vh - 8vh);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -19,7 +22,7 @@
 
 .evaluationButton {
     background-color: #4caf50;
-    color: white;
+    /* color: white; */
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
