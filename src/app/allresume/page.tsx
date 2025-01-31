@@ -49,7 +49,7 @@ const AllResume = () => {
     return (
         <TooltipProvider>
             <div>
-                <h2 className="text-2xl font-bold text-center mb-4">
+                <h2 className="text-2xl font-bold text-center mb-4" style={{color:"black"}}>
                     Candidate Details
                 </h2>
                 <table className={styles.table}>

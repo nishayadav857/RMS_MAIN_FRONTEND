@@ -2,7 +2,7 @@
 .header {
     min-height: 4vh;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     color: white;
     font-size: 24px;
@@ -12,6 +12,7 @@
     box-sizing: border-box;
     position: fixed;
     top: 0;
+    background-color: #003366;
     width: 100%;
 }
 
@@ -23,19 +24,27 @@
     justify-content: center;
     align-items: center;
     margin-right: 10px; /* Adjust spacing as needed */
+    margin-left: 10px;
 }
 
 .bar {
     width: 25px;
     height: 3px;
-    background-color: white;
+    background-color: #fff; /* Change to a visible color */
     margin: 2px 0;
+}
+
+/* Close icon styles */
+.closeIcon {
+    color: #fff; /* Change to red if preferred */
+    font-size: 24px; /* Adjust size as needed */
 }
 
 /* Logo styles */
 .logoImage {
     width: 75%;
     height: auto;
+    filter: brightness(0) invert(1);
     transform: translateY(0);
 }
 
@@ -48,6 +57,11 @@
     height: calc(100vh - 8vh);
     box-shadow: 2px 0 3px rgba(0, 0, 0, 0.2);
     transition: transform 0.5s ease;
+    transform: translateX(-100%); /* Hide the menu off-screen by default */
+}
+
+.slideMenu.active {
+    transform: translateX(0); /* Slide in when active */
 }
 
 .slideMenu ul {
@@ -59,7 +73,7 @@
     margin: 15px 0;
 }
 
-.slideMenu ul li a {
+.slideMenu ul li button {
     text-decoration: none;
     font-family: 'Poppins', sans-serif;
     font-size: 12px;
@@ -67,16 +81,18 @@
     align-items: center;
     padding: 1vw;
     justify-content: space-between;
-    transition: 0.2s ease-in-out;
+    transition: 0.1s ease-in-out;
 }
 
-.slideMenu ul li a:hover {
+.slideMenu ul li:hover {
     color: #007bff;
-    background-color: #b8d5f4;
+    /* background-color: #b8d5f4; */
+    background-color: #e0e0e0;
 }
 
-.slideMenu ul li a:active li {
-    background-color: #0000B3;
+.slideMenu ul li:active li {
+    /* background-color: #0000B3; */
+    background-color: #e0e0e0;
 }
 
 .menu-arrow {
@@ -85,11 +101,11 @@
     color: white;
 }
 
-.slideMenu ul li a:hover .menu-arrow {
+.slideMenu ul li:hover .menu-arrow {
     color: #007bff; /* Change arrow color on hover */
 }
 
 .contentShifted {
     color: white;
-    margin-left: 16.3vw;
+    margin-left: 17vw;
 }
