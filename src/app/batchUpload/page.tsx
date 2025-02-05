@@ -137,6 +137,7 @@ const ResumeUploader = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                width: "70vw",
             }}
         >
             <div

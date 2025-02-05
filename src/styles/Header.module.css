@@ -54,10 +54,13 @@
     top: 8.3vh;
     left: 0;
     width: 13rem;
+    z-index: 10;
+    background-color: whitesmoke;
     height: calc(100vh - 8vh);
     box-shadow: 2px 0 3px rgba(0, 0, 0, 0.2);
     transition: transform 0.5s ease;
     transform: translateX(-100%); /* Hide the menu off-screen by default */
+    z-index: 10;
 }
 
 .slideMenu.active {
@@ -105,7 +108,48 @@
     color: #007bff; /* Change arrow color on hover */
 }
 
+.multistepWrapper {
+    display: flex;
+    width: 83vw;
+}
+
+.slideMenu1 {
+    position: relative;
+    /* top: 8vh; */
+    left: 0;
+    width: 15rem; /* Adjusted width */
+    height: calc(100vh - 8vh);
+    background-color: #f0f0f0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.5s ease;
+    padding: 20px;
+    z-index: 5;
+}
+
+.slideMenu1 ol {
+    list-style-type: decimal;
+    padding: 0;
+}
+
+.slideMenu1 ol li {
+    margin: 15px 0;
+}
+
+.slideMenu1 ol li button {
+    text-decoration: none;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+}
+
+.slideMenu1 ol li button:hover {
+    color: #007bff;
+}
+
+.slideMenu1 ol li button:active li {
+    background-color: #0000B3;
+}
+
 .contentShifted {
-    color: white;
-    margin-left: 17vw;
+    margin-left: 13.4rem; /* Adjusted margin */
 }

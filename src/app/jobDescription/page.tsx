@@ -109,6 +109,7 @@ const JobDescription = () => {
                 minHeight: "calc(100vh - 8vh)",
                 display: "flex",
                 justifyContent: "center",
+                width: "70vw",
                 alignItems: "center",
             }}
         >

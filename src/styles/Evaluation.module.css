@@ -9,6 +9,7 @@
     height: calc(100vh - 8vh);
     padding: 20px;
     border-radius: 10px;
+    width: 70vw;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 

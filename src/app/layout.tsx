@@ -1,4 +1,5 @@
-"use client"; // Marking this file as a client component
+'use client'; // Marking this file as a client component
+
 import styles from "../styles/Header.module.css";
 import Header from "../components/Header";
 import { useState } from "react";
@@ -8,8 +9,10 @@ import AllResume from './allresume/page'; // Importing the All Resume component
 import Dashboard from './dashboard/page'; // Importing the Dashboard component
 import BatchUpload from './batchUpload/page'; // Importing the Batch Upload component
 import JobDescription from './jobDescription/page'; // Importing the Job Description component
-import Evaluation from './evaluation/page'; // Importing the Evaluation component
+// import Evaluation from './evaluation/page'; // Importing the Evaluation component
+import Evaluation from './multistepform/page'; // Importing the Evaluation component
 import DataTable from './DataTable/page'; //Importing the DataTable component
+
 
 export default function RootLayout({
   children,
