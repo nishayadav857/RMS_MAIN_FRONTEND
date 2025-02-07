@@ -17,12 +17,12 @@ const MultiStepForm = () => {
         setIsMenuOpen((prev) => !prev);
     };
 
-    const handleResumeUpload = (data) => {
+    const handleResumeUpload = (data: any) => { // Explicitly typed as any
         setResumeData(data);
         nextStep();
     };
 
-    const handleJdUpload = (data) => {
+    const handleJdUpload = (data: any) => { // Explicitly typed as any
         setJdData(data);
         nextStep();
     };
@@ -33,9 +33,9 @@ const MultiStepForm = () => {
     const renderContent = () => {
         switch (step) {
             case 1:
-                return <ResumeUploader onNext={handleResumeUpload} />;
+                return <ResumeUploader onNext={handleResumeUpload} />; // Ensure onNext is correctly typed
             case 2:
-                return <JobDescription onNext={handleJdUpload} />;
+                return <JobDescription onNext={handleJdUpload} />; // Ensure onNext is correctly typed
             case 3:
                 return <Evaluation />;
             default:
@@ -74,9 +74,9 @@ const MultiStepForm = () => {
             <div className={isMenuOpen ? styles.contentShifted : ''}>
                 {renderContent()}
 
-                <div style={{ position: "absolute", bottom: "5vh", textAlign: "center", width: "64vw", display: "flex", justifyContent: "space-between" }}>
-                    {step > 1 && <button onClick={prevStep} style={{ backgroundColor: "#000b73", color: "white", padding: "1em", borderRadius: "0.9em" }}>Previous</button>}
-                    {step < totalSteps && <button onClick={nextStep} style={{ backgroundColor: "#000b73", color: "white", padding: "1em", borderRadius: "0.9em" }}>Next</button>}
+                <div style={{ position: "absolute", bottom: "5vh", textAlign: "center", width: "60vw", display: "flex", justifyContent: "space-around" }}>
+                    {step > 1 && <button onClick={prevStep} style={{ backgroundColor: "#000b73", color: "white", padding: "1em", borderRadius: "0.9em", width: "100px" }}>Previous</button>}
+                    {step < totalSteps && <button onClick={nextStep} style={{ backgroundColor: "#000b73", color: "white", padding: "1em", borderRadius: "0.9em", width: "100px" }}>Next</button>}
                 </div>
             </div>
         </div>

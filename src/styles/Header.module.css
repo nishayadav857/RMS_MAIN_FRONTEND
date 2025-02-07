@@ -1,16 +1,15 @@
 /* Header styling */
 .header {
-    min-height: 4vh;
+    min-height: 60px; /* Set a minimum height for the header */
     display: flex;
     justify-content: flex-start;
     align-items: center;
     color: white;
     font-size: 24px;
     font-weight: bold;
-    z-index: 100;
     font-family: 'Poppins';
     box-sizing: border-box;
-    position: fixed;
+    position: sticky; /* Changed from fixed to sticky */
     top: 0;
     background-color: #003366;
     width: 100%;
@@ -51,16 +50,14 @@
 /* Sliding menu styles */
 .slideMenu {
     position: fixed;
-    top: 8.3vh;
+    top: 8.3vh; /* Adjusted to account for header height */
     left: 0;
     width: 13rem;
-    z-index: 10;
     background-color: whitesmoke;
     height: calc(100vh - 8vh);
     box-shadow: 2px 0 3px rgba(0, 0, 0, 0.2);
     transition: transform 0.5s ease;
     transform: translateX(-100%); /* Hide the menu off-screen by default */
-    z-index: 10;
 }
 
 .slideMenu.active {
@@ -89,12 +86,10 @@
 
 .slideMenu ul li:hover {
     color: #007bff;
-    /* background-color: #b8d5f4; */
     background-color: #e0e0e0;
 }
 
 .slideMenu ul li:active li {
-    /* background-color: #0000B3; */
     background-color: #e0e0e0;
 }
 
@@ -110,20 +105,24 @@
 
 .multistepWrapper {
     display: flex;
-    width: 83vw;
+    width: 70vw; /* Adjusted width to create space on sides */
+    height: calc(100vh - 15vh); /* Set height to fit within the viewport */
+    padding: 2vh; /* Padding of 2vh from all sides */
+    border-radius: 10px; /* Rounded borders */
+    background-color: white; /* Background color for the box */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow: hidden; /* Prevent scrolling */
 }
 
 .slideMenu1 {
     position: relative;
-    /* top: 8vh; */
     left: 0;
-    width: 15rem; /* Adjusted width */
-    height: calc(100vh - 8vh);
+    width: 20rem; /* Adjusted width to provide more space */
+    height: calc(100vh - 8vh); /* Adjusted height to match parent */
     background-color: #f0f0f0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.5s ease;
     padding: 20px;
-    z-index: 5;
 }
 
 .slideMenu1 ol {
@@ -151,5 +150,5 @@
 }
 
 .contentShifted {
-    margin-left: 13.4rem; /* Adjusted margin */
+    margin-left: 15rem; /* Adjusted margin to match the slide menu width */
 }

@@ -38,7 +38,7 @@ const Evaluation = () => {
     };
 
     return (
-        <div className={styles.evaluationContainer}>
+        <div className={styles.evaluationContainer} style={{ width: "60vw" }}> {/* Reduced width */}
             <h1>Evaluation Page</h1>
             <select className={styles.evaluationDropdown} value={selectedJD} onChange={(e) => setSelectedJD(e.target.value)}>
                 <option value="">Select Job Description</option>

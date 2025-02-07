@@ -15,7 +15,7 @@ interface FileUpload {
     status: string;
 }
 
-const ResumeUploader = () => {
+const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
     const [files, setFiles] = useState<FileUpload[]>([]);
     const [uploading, setUploading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -94,6 +94,13 @@ const ResumeUploader = () => {
                 }
 
                 checkIfUploadingComplete();
+                toast.success("All resumes uploaded successfully.", { className: 'custom-toast' });
+                setTimeout(() => {
+                    onNext(fileObjects); // Call onNext with the fileObjects
+                }, 2000); // Wait for 2 seconds before navigating
+
+
+
             })
             .catch((error) => {
                 setFiles((prev) =>
@@ -131,19 +138,17 @@ const ResumeUploader = () => {
         <div
             style={{
                 backgroundColor: "#ffffff",
-                // backgroundImage: "linear-gradient(315deg, #ffffff 0%, #274060 74%)",
                 background: '#e8eff9',
                 minHeight: "calc(100vh - 8vh)",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width: "70vw",
+                width: "60vw", // Reduced width
             }}
         >
             <div
                 style={{
                     background: "white",
-                    // borderRadius: "10px",
                     padding: "30px",
                     boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
                     maxWidth: "600px",
@@ -220,7 +225,7 @@ const ResumeUploader = () => {
 
                 {files.length > 0 && (
                     <ul style={{ marginTop: "20px", listStyle: "none", padding: 0, color: "black", maxHeight: "200px", overflowY: "auto" }}>
-{files.map((file: FileUpload, index: number) => (
+                        {files.map((file: FileUpload, index: number): JSX.Element => (
 
                             <li key={index} style={{ marginBottom: "15px" }}>
                                 <div style={{ display: "flex", alignItems: "center" }}>

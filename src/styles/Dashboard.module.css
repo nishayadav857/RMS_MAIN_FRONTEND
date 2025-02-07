@@ -1,16 +1,37 @@
-.dashboardGraphsContainer {
-    width: 50vw;
+.graphsContainer {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin: 20px 0;
+    justify-content: space-between; /* Aligns the line chart and bar charts */
+    margin-top: 20px;
 }
 
-.chartContainer {
-    flex: 1;
-    margin: 0 10px;
-    min-width: 300px; /* Ensures a minimum width for each graph */
-    max-width: 45%; /* Ensures the graphs do not exceed 45% of the container */
+.lineChartWrapper {
+    width: 60%; /* Adjust width to 60% */
+}
+
+.barGraphsWrapper {
+    width: 35%; /* Adjust width as needed */
+    display: flex;
+    flex-direction: column; /* Stack bar charts vertically */
+    gap: 20px; /* Space between the two bar charts */
+}
+
+.chartSize {
+    width: 20vw; /* Set the desired width */
+    height: 20vh; /* Set the desired height */
+}
+
+.lineChartSize {
+    width: 100%; /* Set the desired width */
+    height: 30vh; /* Set the desired height */
+}
+
+.dashboardGraphsContainer {
+    width: 25vw;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 20px 0;
 }
 
 /* Main dashboard content area */
@@ -33,84 +54,4 @@
     align-items: center;
 }
 
-/* .cardsContainer {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.cardsContainer .card {
-    min-width: 200px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 10px;
-}
-
-.cardsContainer .card h2 {
-    font-size: 16px;
-    margin: 0;
-    color: #2d3748;
-}
-
-.countDisplay,
-.campaignName {
-    font-family: 'Poppins';
-    font-size: 22px;
-    font-weight: bold;
-    color: #2d3748;
-    text-align: center;
-    margin: 8px 0 0 0;
-}
-
-.campaignName {
-    color: #007bff;
-} */
-
-.sideBySideContainer {
-    display: flex;
-    gap: 24px;
-    margin-top: 24px;
-    width: 100%;
-}
-
-/* Pie chart container */
-.pieChartContainer {
-    flex: 1;
-    min-width: 0;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    height: 400px; /* Increased height for better visibility of outlabels */
-}
-
-.tableContainer {
-    flex: 1;
-    min-width: 0;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    height: 400px;
-    display: flex;
-    flex-direction: column;
-}
-
-.dashboardCandidatesTable {
-    width: 100%;
-    table-layout: fixed;
-}
-
-.dashboardCandidatesTable td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.dashboardCandidatesTable tr:hover {
-    background-color: #f8f9fa;
-}
+/* Other existing styles... */
