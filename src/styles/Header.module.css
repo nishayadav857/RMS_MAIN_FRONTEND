@@ -13,6 +13,7 @@
     top: 0;
     background-color: #003366;
     width: 100%;
+    z-index: 1;
 }
 
 /* Hamburger icon styles */
@@ -105,8 +106,9 @@
 
 .multistepWrapper {
     display: flex;
-    width: 70vw; /* Adjusted width to create space on sides */
+    width: 95%; /* Adjusted width to create space on sides */
     height: calc(100vh - 15vh); /* Set height to fit within the viewport */
+    margin: 0 auto;
     padding: 2vh; /* Padding of 2vh from all sides */
     border-radius: 10px; /* Rounded borders */
     background-color: white; /* Background color for the box */
@@ -150,5 +152,5 @@
 }
 
 .contentShifted {
-    margin-left: 15rem; /* Adjusted margin to match the slide menu width */
+    margin-left: 13rem; /* Adjusted margin to match the slide menu width */
 }

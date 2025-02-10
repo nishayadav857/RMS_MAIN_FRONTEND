@@ -137,6 +137,10 @@ html {
   padding: 0px;
 }
 
+body {
+  /* Removed padding from body to avoid affecting the header */
+}
+
 body{
   /* margin-top:8vh; */
 }

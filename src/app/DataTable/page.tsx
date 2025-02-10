@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Button from '@mui/material/Button'; // Importing Button component
+
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { Box, CircularProgress, Typography, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
@@ -61,7 +63,23 @@ export default function DataTable() {
         fetchResumes();
     }, []);
 
-    const rows = resumes.map((resume, index) => ({
+    const handleDownloadExcel = async () => {
+        const response = await fetch("http://localhost:8080/api/resume-evaluation/excel");
+        if (!response.ok) {
+            throw new Error("Failed to download file");
+        }
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'resume_evaluation.xlsx'; // Specify the file name
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    };
+
+    const rows = resumes.map((resume, index) => ({ 
+
         id: index + 1,
         jdfilename: resume.jdfilename,
         resumefilename: resume.resumefilename,
@@ -82,7 +100,15 @@ export default function DataTable() {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="92vh">
             <Paper sx={{ height: 500, width: '95%', overflow: 'hidden', borderRadius: 2, boxShadow: 3, position: 'relative' }}>
-                <Box sx={{ padding: 2 }}>
+                <Box sx={{ padding: 2, marginBottom: 2 }}> {/* Added margin for spacing */}
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        onClick={handleDownloadExcel} // Button click handler
+                    >
+                        Download Excel
+                    </Button>
+
                     <Typography variant="h5" align="center" sx={{ marginBottom: 1 }}>
                         Candidate Details
                     </Typography>

@@ -1,28 +1,63 @@
 .graphsContainer {
     display: flex;
-    justify-content: space-between; /* Aligns the line chart and bar charts */
-    margin-top: 20px;
+    width: 95%;
+    margin: 0 auto;
+    justify-content: space-between;
+    margin-top: 1.5vh;
 }
 
 .lineChartWrapper {
-    width: 60%; /* Adjust width to 60% */
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2vh;
+    /* Adjust width to 60% */
+}
+
+.lineChart {
+    background-color: #f8f9fa;
+    border-radius: 1.5vw;
+    padding: 1.5vh;
+}
+
+.tableWrapper {
+    background-color: #f8f9fa;
+    border-radius: 1.5vw;
+    padding: 1.5vh;
+}
+
+.rightSideWrapper {
+    width: 39%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .barGraphsWrapper {
-    width: 35%; /* Adjust width as needed */
-    display: flex;
-    flex-direction: column; /* Stack bar charts vertically */
-    gap: 20px; /* Space between the two bar charts */
+    background-color: #f8f9fa;
+    border-radius: 1vw;
+    padding: 1.5vh;
+}
+
+.recentActivity {
+    background-color: #f8f9fa;
+    border-radius: 1vw;
+    padding: 1.5vh;
 }
 
 .chartSize {
-    width: 20vw; /* Set the desired width */
-    height: 20vh; /* Set the desired height */
+    width: 20vw;
+    /* Set the desired width */
+    height: 20vh;
+    /* Set the desired height */
 }
 
 .lineChartSize {
-    width: 100%; /* Set the desired width */
-    height: 30vh; /* Set the desired height */
+    width: 100%;
+    /* Set the desired width */
+    height: 30vh;
+    /* Set the desired height */
 }
 
 .dashboardGraphsContainer {
@@ -31,13 +66,14 @@
     justify-content: space-between;
     flex-direction: column;
     align-items: flex-start;
-    margin: 20px 0;
 }
 
 /* Main dashboard content area */
 .dashboard {
     font-family: 'Poppins';
-    background-color: #f8f9fa;
+    position: relative;
+    top: 1.5vh;
+    /* background-color: #f8f9fa; */
     min-height: 100vh;
 }
 
@@ -48,10 +84,15 @@
     margin-top: 24px;
 }
 
-.cardsWrapper{
+.cardsWrapper {
     display: flex;
+    background-color: #f8f9fa;
     justify-content: space-around;
+    padding: 2vh;
+    width: 95%;
+    margin: 0 auto;
     align-items: center;
+    border-radius: 1.5vw;
 }
 
 /* Other existing styles... */

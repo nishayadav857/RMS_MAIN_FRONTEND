@@ -94,12 +94,9 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
                 }
 
                 checkIfUploadingComplete();
-                toast.success("All resumes uploaded successfully.", { className: 'custom-toast' });
                 setTimeout(() => {
                     onNext(fileObjects); // Call onNext with the fileObjects
                 }, 2000); // Wait for 2 seconds before navigating
-
-
 
             })
             .catch((error) => {
@@ -226,7 +223,6 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
                 {files.length > 0 && (
                     <ul style={{ marginTop: "20px", listStyle: "none", padding: 0, color: "black", maxHeight: "200px", overflowY: "auto" }}>
                         {files.map((file: FileUpload, index: number): JSX.Element => (
-
                             <li key={index} style={{ marginBottom: "15px" }}>
                                 <div style={{ display: "flex", alignItems: "center" }}>
                                     <span style={{ flexGrow: 1 }}>
