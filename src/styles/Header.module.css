@@ -16,24 +16,6 @@
     z-index: 1;
 }
 
-/* Hamburger icon styles */
-.hamburger {
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-right: 10px; /* Adjust spacing as needed */
-    margin-left: 10px;
-}
-
-.bar {
-    width: 25px;
-    height: 3px;
-    background-color: #fff; /* Change to a visible color */
-    margin: 2px 0;
-}
-
 /* Close icon styles */
 .closeIcon {
     color: #fff; /* Change to red if preferred */
@@ -119,7 +101,7 @@
 .slideMenu1 {
     position: relative;
     left: 0;
-    width: 20rem; /* Adjusted width to provide more space */
+    width: 13rem; /* Adjusted width to provide more space */
     height: calc(100vh - 8vh); /* Adjusted height to match parent */
     background-color: #f0f0f0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
@@ -152,5 +134,5 @@
 }
 
 .contentShifted {
-    margin-left: 13rem; /* Adjusted margin to match the slide menu width */
+    margin-left: 15rem; /* Adjusted margin to match the slide menu width */
 }

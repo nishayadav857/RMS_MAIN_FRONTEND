@@ -1,3 +1,13 @@
+/* Main dashboard content area */
+.dashboard {
+    font-family: 'Poppins';
+    position: relative;
+    top: 1.5vh;
+    /* background-color: #f8f9fa; */
+    min-height: 100vh;
+    /* max-width: 80vw; */
+}
+
 .graphsContainer {
     display: flex;
     width: 95%;
@@ -68,21 +78,13 @@
     align-items: flex-start;
 }
 
-/* Main dashboard content area */
-.dashboard {
-    font-family: 'Poppins';
-    position: relative;
-    top: 1.5vh;
-    /* background-color: #f8f9fa; */
-    min-height: 100vh;
-}
 
-.gridContainer {
+/* .gridContainer {
     display: flex;
     flex-direction: column;
     gap: 24px;
     margin-top: 24px;
-}
+} */
 
 .cardsWrapper {
     display: flex;

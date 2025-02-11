@@ -37,7 +37,7 @@ const MultiStepForm = () => {
             case 2:
                 return <JobDescription onNext={handleJdUpload} />; // Ensure onNext is correctly typed
             case 3:
-                return <Evaluation />;
+                return <Evaluation />; // No onNext prop passed here
             default:
                 return null; // Render nothing if no step is selected
         }
