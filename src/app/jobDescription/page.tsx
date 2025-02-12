@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify"; // Import ToastContainer
+import { toast, ToastContainer } from "react-toastify"; 
 import 'react-toastify/dist/ReactToastify.css';
+import { Form } from "../../components/ui/form"; 
+import { Input } from "../../components/ui/input"; 
+import { Button } from "../../components/ui/button";
 
 interface FileUpload {
     files: File;
@@ -12,10 +15,36 @@ interface FileUpload {
     status: string;
 }
 
+interface JobDescriptionData {
+    role: string;
+    companyName: string;
+    location: string;
+    experienceMin: number;
+    experienceMax: number;
+    mustHaveSkills: string[];
+    goodToHaveSkills: string[];
+    educationRequirement: string;
+    certifications: string[];
+    responsibilities: string[];
+    softSkills: string[];
+    filename: string; 
+    numOpenings: number; // New field added
+    jdcontent: string; // Retain this field for the payload but not in the form
+}
+
+interface ModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
 const JobDescription = () => {
+    const [jobDescription, setJobDescription] = useState<JobDescriptionData | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const [files, setFiles] = useState<FileUpload[]>([]);
     const [uploading, setUploading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
 
     const onDrop = (acceptedFiles: File[]) => {
         const pdfFiles = acceptedFiles.filter((file) => file.type === "application/pdf");
@@ -67,7 +96,9 @@ const JobDescription = () => {
                                 : file
                         )
                     );
-                    toast.success("Upload successful!"); // Success notification
+                    toast.success("Upload successful!"); 
+                    fetchJobDescription(fileObj.files.name); 
+
                     checkIfUploadingComplete();
                 })
                 .catch((error) => {
@@ -78,10 +109,24 @@ const JobDescription = () => {
                                 : file
                         )
                     );
-                    toast.error(`Upload failed: ${error.message}`); // Error notification
+                    toast.error(`Upload failed: ${error.message}`); 
                     checkIfUploadingComplete();
                 });
         });
+    };
+
+    const fetchJobDescription = async (filename: string) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`http://localhost:8080/api/job-descriptions/${filename}`);
+            setJobDescription(response.data);
+            setIsModalOpen(true); // Open the modal after fetching job description
+        } catch (error) {
+            setError("Failed to fetch job description.");
+            toast.error("Failed to fetch job description."); 
+        } finally {
+            setLoading(false);
+        }
     };
 
     const checkIfUploadingComplete = () => {
@@ -93,12 +138,123 @@ const JobDescription = () => {
         setFiles((prev) => prev.filter((file) => file.files.name !== fileName));
     };
 
+    const handleSubmit = async () => {
+        if (jobDescription) {
+            try {
+                await axios.put(`http://localhost:8080/api/job-descriptions/${jobDescription.filename}`, jobDescription);
+                toast.success("Job description updated successfully!");
+            } catch (error) {
+                toast.error("Failed to update job description.");
+            }
+        }
+    };
+
     const { getRootProps, getInputProps, open } = useDropzone({
         onDrop,
         noClick: true,
         noKeyboard: true,
         accept: { "application/pdf": [] },
     });
+
+    // Modal Component
+    const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+        if (!isOpen) return null;
+
+        return (
+            <div style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 1000,
+            }}>
+                <div style={{
+                    background: "white",
+                    padding: "20px",
+                    borderRadius: "8px",
+                    width: "80%",
+                    maxWidth: "600px",
+                    maxHeight: "80vh", // Allow the modal to have a maximum height
+                    overflowY: "auto", // Enable vertical scrolling
+                }}>
+                    <h2>Job Description Details</h2>
+                    {jobDescription && (
+                        <form onSubmit={handleSubmit}> {/* Changed to form element */}
+                            <div>
+                                <label>Filename:</label>
+                                <Input type="text" value={jobDescription.filename} readOnly />
+                            </div>
+                            <div>
+                                <label>Role:</label>
+                                <Input type="text" value={jobDescription.role} onChange={(e) => setJobDescription({ ...jobDescription, role: e.target.value })} />
+                            </div>
+                            <div>
+                                <label>Company Name:</label>
+                                <Input type="text" value={jobDescription.companyName} onChange={(e) => setJobDescription({ ...jobDescription, companyName: e.target.value })} />
+                            </div>
+                            <div>
+                                <label>Location:</label>
+                                <Input type="text" value={jobDescription.location} onChange={(e) => setJobDescription({ ...jobDescription, location: e.target.value })} />
+                            </div>
+                            <div>
+                                <label>Experience Minimum:</label>
+                                <Input type="number" value={jobDescription.experienceMin} onChange={(e) => setJobDescription({ ...jobDescription, experienceMin: Number(e.target.value) })} />
+                            </div>
+                            <div>
+                                <label>Experience Maximum:</label>
+                                <Input type="number" value={jobDescription.experienceMax} onChange={(e) => setJobDescription({ ...jobDescription, experienceMax: Number(e.target.value) })} />
+                            </div>
+                            <div>
+                                <label>Number of Openings:</label>
+                                <Input type="number" value={jobDescription.numOpenings} onChange={(e) => setJobDescription({ ...jobDescription, numOpenings: Number(e.target.value) })} />
+                            </div>
+                            <div>
+                                <label>Must Have Skills:</label>
+                                <Input type="text" value={jobDescription.mustHaveSkills.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, mustHaveSkills: e.target.value.split(", ") })} />
+                            </div>
+                            <div>
+                                <label>Good To Have Skills:</label>
+                                <Input type="text" value={jobDescription.goodToHaveSkills.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, goodToHaveSkills: e.target.value.split(", ") })} />
+                            </div>
+                            <div>
+                                <label>Education Requirement:</label>
+                                <Input type="text" value={jobDescription.educationRequirement} onChange={(e) => setJobDescription({ ...jobDescription, educationRequirement: e.target.value })} />
+                            </div>
+                            <div>
+                                <label>Certifications:</label>
+                                <Input type="text" value={jobDescription.certifications.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, certifications: e.target.value.split(", ") })} />
+                            </div>
+                            <div>
+                                <label>Responsibilities:</label>
+                                <Input type="text" value={jobDescription.responsibilities.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, responsibilities: e.target.value.split(", ") })} />
+                            </div>
+                            <div>
+                                <label>Soft Skills:</label>
+                                <Input type="text" value={jobDescription.softSkills.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, softSkills: e.target.value.split(", ") })} />
+                            </div>
+                            <Button type="submit">Submit Changes</Button>
+                        </form>
+                    )}
+                    <button onClick={onClose} style={{
+                        backgroundColor: "#4caf50",
+                        color: "#fff",
+                        padding: "10px 20px",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        marginTop: "20px",
+                    }}>
+                        Close
+                    </button>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div
@@ -109,7 +265,7 @@ const JobDescription = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width: "60vw", // Reduced width
+                width: "60vw",
             }}
         >
             <div
@@ -203,73 +359,105 @@ const JobDescription = () => {
                 </div>
 
                 {/* Right Section - Only show if there are uploaded files */}
-                {files.length > 0 && (
+                {loading && (
+                    <div style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 1000,
+                    }}>
+                        <div style={{ color: "white" }}>
+                            <h2>Loading...</h2>
+                            <div className="spinner" style={{
+                                border: "4px solid rgba(255, 255, 255, 0.3)",
+                                borderTop: "4px solid white",
+                                borderRadius: "50%",
+                                width: "50px",
+                                height: "50px",
+                                animation: "spin 1s linear infinite"
+                            }} />
+                        </div>
+                    </div>
+                )}
+                {files.length > 0 && jobDescription && (
                     <div
                         style={{
                             flex: 1,
-                            maxHeight: "400px", // Set max height for the uploaded files section
-                            overflowY: "auto", // Enable vertical scrolling
+                            maxHeight: "400px",
+                            overflowY: "auto",
                             border: "1px solid #ccc",
                             borderRadius: "8px",
                             padding: "10px",
                             background: "#f9f9f9",
                         }}
                     >
-                        <h3 style={{ textAlign: "center", marginBottom: "10px", color: "black" }}>Uploaded Files</h3>
-                        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                            {files.map((file: FileUpload, index: number) => (
-                                <React.Fragment key={index}>
-                                    <li style={{ marginBottom: "15px" }}>
-                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                            <span style={{ flexGrow: 1, color: "black" }}>
-                                                {file.files.name} - {file.status} ({file.progress}%)
-                                            </span>
-                                            <button
-                                                onClick={() => cancelUpload(file.files.name)}
-                                                style={{
-                                                    background: "none",
-                                                    border: "none",
-                                                    color: "red",
-                                                    cursor: "pointer",
-                                                    marginLeft: "10px",
-                                                }}
-                                            >
-                                                ❌
-                                            </button>
-                                        </div>
-                                        <div
-                                            style={{
-                                                overflowY: "scroll",
-                                                background: "#e0e0e0",
-                                                height: "5px",
-                                                width: "100%",
-                                                borderRadius: "3px",
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    width: `${file.progress}%`,
-                                                    height: "5px",
-                                                    background:
-                                                        file.status === "Completed"
-                                                            ? "green"
-                                                            : file.status === "Failed"
-                                                                ? "red"
-                                                                : "#4a90e2",
-                                                    borderRadius: "3px",
-                                                    transition: "width 0.5s ease",
-                                                }}
-                                            ></div>
-                                        </div>
-                                    </li>
-                                    {index < files.length - 1 && <hr style={{ borderColor: "#ccc", margin: "10px 0" }} />}
-                                </React.Fragment>
-                            ))}
-                        </ul>
+                        <h3 style={{ textAlign: "center", marginBottom: "10px", color: "black" }}>Job Description Details</h3>
+                        <form onSubmit={handleSubmit}> {/* Changed to form element */}
+                            <div>
+                                <label>Filename:</label>
+                                <Input type="text" value={jobDescription.filename} readOnly />
+                            </div>
+                            <div>
+                                <label>Role:</label>
+                                <Input type="text" value={jobDescription.role} onChange={(e) => setJobDescription({ ...jobDescription, role: e.target.value })} />
+                            </div>
+                            <div>
+                                <label>Company Name:</label>
+                                <Input type="text" value={jobDescription.companyName} onChange={(e) => setJobDescription({ ...jobDescription, companyName: e.target.value })} />
+                            </div>
+                            <div>
+                                <label>Location:</label>
+                                <Input type="text" value={jobDescription.location} onChange={(e) => setJobDescription({ ...jobDescription, location: e.target.value })} />
+                            </div>
+                            <div>
+                                <label>Experience Minimum:</label>
+                                <Input type="number" value={jobDescription.experienceMin} onChange={(e) => setJobDescription({ ...jobDescription, experienceMin: Number(e.target.value) })} />
+                            </div>
+                            <div>
+                                <label>Experience Maximum:</label>
+                                <Input type="number" value={jobDescription.experienceMax} onChange={(e) => setJobDescription({ ...jobDescription, experienceMax: Number(e.target.value) })} />
+                            </div>
+                            <div>
+                                <label>Number of Openings:</label>
+                                <Input type="number" value={jobDescription.numOpenings} onChange={(e) => setJobDescription({ ...jobDescription, numOpenings: Number(e.target.value) })} />
+                            </div>
+                            <div>
+                                <label>Must Have Skills:</label>
+                                <Input type="text" value={jobDescription.mustHaveSkills.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, mustHaveSkills: e.target.value.split(", ") })} />
+                            </div>
+                            <div>
+                                <label>Good To Have Skills:</label>
+                                <Input type="text" value={jobDescription.goodToHaveSkills.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, goodToHaveSkills: e.target.value.split(", ") })} />
+                            </div>
+                            <div>
+                                <label>Education Requirement:</label>
+                                <Input type="text" value={jobDescription.educationRequirement} onChange={(e) => setJobDescription({ ...jobDescription, educationRequirement: e.target.value })} />
+                            </div>
+                            <div>
+                                <label>Certifications:</label>
+                                <Input type="text" value={jobDescription.certifications.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, certifications: e.target.value.split(", ") })} />
+                            </div>
+                            <div>
+                                <label>Responsibilities:</label>
+                                <Input type="text" value={jobDescription.responsibilities.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, responsibilities: e.target.value.split(", ") })} />
+                            </div>
+                            <div>
+                                <label>Soft Skills:</label>
+                                <Input type="text" value={jobDescription.softSkills.join(", ")} onChange={(e) => setJobDescription({ ...jobDescription, softSkills: e.target.value.split(", ") })} />
+                            </div>
+                            <Button type="submit">Submit Changes</Button>
+                        </form>
                     </div>
                 )}
             </div>
-            <ToastContainer /> {/* Add ToastContainer here */}
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} /> {/* Modal for displaying job description */}
+            <ToastContainer /> 
         </div>
     );
 };

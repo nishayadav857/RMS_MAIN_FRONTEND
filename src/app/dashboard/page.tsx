@@ -128,41 +128,42 @@ const Dashboard = () => {
     <div className={styles.dashboard}>
 
       <div className={styles.cardsWrapper}>
-        <Card className="w-[210px] h-[130px]">
-          <CardContent className="flex flex-col items-center justify-center h-full text-center p-2">
+        <Card className="w-[210px] h-[130px] bg-green-500">
+          <CardContent className="flex flex-col items-center justify-center h-full text-center p-2 text-white">
             <FontAwesomeIcon icon={faChartBar} size="2x" />
             <CardTitle>Campaign Name</CardTitle>
             <h3>JLR</h3>
           </CardContent>
         </Card>
-        <Card className="w-[210px] h-[130px]">
-          <CardContent className="flex flex-col items-center justify-center h-full text-center p-2">
+        <Card className="w-[210px] h-[130px] bg-cyan-500">
+          <CardContent className="flex flex-col items-center justify-center h-full text-center p-2 text-white">
             <FontAwesomeIcon icon={faUsers} size="2x" />
             <CardTitle>Total Number of Applicants</CardTitle>
             <h3>{candidateCount}</h3>
           </CardContent>
         </Card>
-        <Card className="w-[210px] h-[130px]">
-          <CardContent className="flex flex-col items-center justify-center h-full text-center p-2">
+        <Card className="w-[210px] h-[130px] bg-amber-500">
+          <CardContent className="flex flex-col items-center justify-center h-full text-center p-2 text-white">
             <FontAwesomeIcon icon={faClipboardCheck} size="2x" />
             <CardTitle>MCQ Conducted</CardTitle>
             <h3>10</h3> {/* Hardcoded value */}
           </CardContent>
         </Card>
-        <Card className="w-[210px] h-[130px]">
-          <CardContent className="flex flex-col items-center justify-center h-full text-center p-2">
+        <Card className="w-[210px] h-[130px] bg-purple-500">
+          <CardContent className="flex flex-col items-center justify-center h-full text-center p-2 text-white">
             <FontAwesomeIcon icon={faUserCheck} size="2x" />
             <CardTitle>Interview Conducted</CardTitle>
             <h3>5</h3> {/* Hardcoded value */}
           </CardContent>
         </Card>
+
       </div>
       <div className={styles.graphsContainer}>
         <div className={styles.lineChartWrapper}>
           <div className={styles.lineChart}>
             <h2>Selected Candidates Over Time</h2>
             <br></br>
-            <LineChart data={lineChartData} width={600} height={300} margin={{ top: 10, right: 5 }}>
+            <LineChart data={lineChartData} width={600} height={300} margin={{ top: 10, right: 85 }}>
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />

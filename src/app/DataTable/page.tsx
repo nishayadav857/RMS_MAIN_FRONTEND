@@ -1,48 +1,86 @@
 "use client";
-
+ 
 import React, { useEffect, useState } from "react";
-import Button from '@mui/material/Button'; // Importing Button component
-
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { Box, CircularProgress, Typography, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close'; // Importing the close icon
+import CloseIcon from '@mui/icons-material/Close';
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../../components/ui/tooltip";
-import styles from "../../styles/AllResume.module.css"; // Importing styles for consistency
-
+import styles from "../../styles/AllResume.module.css";
+ 
 interface Skill {
     skill: string;
     presentInResume: string;
     comment: string;
 }
-
+ 
 interface Resume {
     jdfilename: string;
     resumefilename: string;
     candidateEmail: string;
-    compatibilityPercentage: number;
+    compatiblity: number;
     mustHaveSkills: Skill[];
     goodToHaveSkills: Skill[];
     extraSkills: Skill[];
 }
-
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90, headerAlign: 'center', align: 'center'},
-    { field: 'jdfilename', headerName: 'JD Filename', width: 220, headerAlign: 'center', align: 'center' },
-    { field: 'resumefilename', headerName: 'Resume Filename', width: 240, headerAlign: 'center', align: 'center' },
-    { field: 'candidateEmail', headerName: 'Candidate Email', width: 220, headerAlign: 'center', align: 'center' },
-    { field: 'compatibilityPercentage', headerName: 'Compatibility Percentage', type: 'number', width: 200, headerAlign: 'center', align: 'center' },
-];
-
+ 
 export default function DataTable() {
+    const [showCheckboxes, setShowCheckboxes] = useState(false);
+    const [selectedRows, setSelectedRows] = useState<number[]>([]);
     const [resumes, setResumes] = useState<Resume[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isSending, setIsSending] = useState(false);
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
     const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
-
+ 
+    const columns: GridColDef[] = [
+        {
+            field: 'select',
+            headerName: '',
+            width: 50,
+            renderCell: (params) => (
+                showCheckboxes && (
+                    <Checkbox
+                        checked={selectedRows.includes(params.row.id)}
+                        onChange={() => handleCheckboxChange(params.row.id)}
+                    />
+                )
+            ),
+            renderHeader: () => (
+                showCheckboxes && (
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <Checkbox
+                            checked={rows.length > 0 && selectedRows.length === rows.length}
+                            indeterminate={selectedRows.length > 0 && selectedRows.length < rows.length}
+                            onChange={handleSelectAll}
+                            sx={{
+                                padding: 0,
+                                '&:hover': {
+                                    backgroundColor: 'transparent'
+                                }
+                            }}
+                        />
+                    </div>
+                )
+            ),
+            headerAlign: 'center',
+            align: 'center',
+            disableColumnMenu: true,
+            sortable: false,
+            filterable: false
+        },
+        { field: 'id', headerName: 'ID', width: 90, headerAlign: 'center', align: 'center'},
+        { field: 'jdfilename', headerName: 'JD Filename', width: 220, headerAlign: 'center', align: 'center' },
+        { field: 'resumefilename', headerName: 'Resume Filename', width: 240, headerAlign: 'center', align: 'center' },
+        { field: 'candidateEmail', headerName: 'Candidate Email', width: 220, headerAlign: 'center', align: 'center' },
+        { field: 'compatiblity', headerName: 'Compatibility Percentage', type: 'number', width: 200, headerAlign: 'center', align: 'center' },
+    ];
+ 
     useEffect(() => {
         const fetchResumes = async () => {
             setLoading(true);
@@ -59,66 +97,166 @@ export default function DataTable() {
                 setLoading(false);
             }
         };
-
         fetchResumes();
     }, []);
-
-    const handleDownloadExcel = async () => {
-        const response = await fetch("http://localhost:8080/api/resume-evaluation/excel");
-        if (!response.ok) {
-            throw new Error("Failed to download file");
-        }
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'resume_evaluation.xlsx'; // Specify the file name
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+ 
+    const handleCheckboxChange = (id: number) => {
+        setSelectedRows(prev =>
+            prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]
+        );
     };
-
-    const rows = resumes.map((resume, index) => ({ 
-
+ 
+    const handleSelectAll = () => {
+        if (selectedRows.length === rows.length) {
+            setSelectedRows([]);
+        } else {
+            setSelectedRows(rows.map(row => row.id));
+        }
+    };
+ 
+    const handleDownloadExcel = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/api/resume-evaluation/excel");
+            if (!response.ok) throw new Error("Failed to download file");
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'resume_evaluation.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } catch (error) {
+            console.error("Download failed:", error);
+            setError("Failed to download Excel file");
+        }
+    };
+ 
+    const handleSendSelected = async () => {
+        if (selectedRows.length === 0) return;
+       
+        setIsSending(true);
+        setError(null);
+       
+        try {
+            const emails = selectedRows
+                .map(id => resumes[id - 1]?.candidateEmail)
+                .filter(email => email !== undefined) as string[];
+ 
+            const response = await fetch("http://localhost:8080/api/hr/publish-selected", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ emails }),
+            });
+ 
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to submit selected candidates');
+            }
+ 
+            setSelectedRows([]);
+            setShowCheckboxes(false);
+        } catch (error) {
+            console.error("Submission error:", error);
+            setError(error instanceof Error ? error.message : "Failed to submit selected candidates");
+        } finally {
+            setIsSending(false);
+        }
+    };
+ 
+    const rows = resumes.map((resume, index) => ({
         id: index + 1,
         jdfilename: resume.jdfilename,
         resumefilename: resume.resumefilename,
         candidateEmail: resume.candidateEmail,
-        compatibilityPercentage: resume.compatibilityPercentage,
+        compatiblity: resume.compatiblity,
     }));
-
+ 
     const handleRowClick = (resume: Resume) => {
-        setSelectedResume(resume);
-        setDialogOpen(true);
+        if (!showCheckboxes) {
+            setSelectedResume(resume);
+            setDialogOpen(true);
+        }
     };
-
+ 
     const handleCloseDialog = () => {
         setDialogOpen(false);
         setSelectedResume(null);
     };
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" height="92vh">
-            <Paper sx={{ height: 500, width: '95%', overflow: 'hidden', borderRadius: 2, boxShadow: 3, position: 'relative' }}>
-                <Box sx={{ padding: 2, marginBottom: 2 }}> {/* Added margin for spacing */}
-                    <Button 
-                        variant="contained" 
-                        color="primary" 
-                        onClick={handleDownloadExcel} // Button click handler
-                    >
-                        Download Excel
-                    </Button>
-
-                    <Typography variant="h5" align="center" sx={{ marginBottom: 1 }}>
+        <Box display="flex" justifyContent="center" alignItems="center" height="95vh">
+            <Paper sx={{
+                height: 580,
+                width: '95%',
+                overflow: 'hidden',
+                borderRadius: 2,
+                boxShadow: 3,
+                position: 'relative'
+                , overflowY: 'scroll',
+                '& .MuiDataGrid-columnHeaderCheckbox': {
+                    minWidth: '0 !important',
+                    maxWidth: 'none !important'
+                }
+            }}>
+                <Box sx={{ padding: 2, marginBottom: 2 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleDownloadExcel}
+                            disabled={loading || isSending}
+                        >
+                            Download Excel
+                        </Button>
+ 
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => {
+                                setShowCheckboxes(!showCheckboxes);
+                                if (!showCheckboxes) setSelectedRows([]);
+                            }}
+                            disabled={loading || isSending}
+                        >
+                            {showCheckboxes ? 'Cancel Selection' : 'Select Rows'}
+                        </Button>
+ 
+                        {selectedRows.length > 0 && (
+                            <Button
+                                variant="contained"
+                                color="success"
+                                sx={{ ml: 2 }}
+                                onClick={handleSendSelected}
+                                disabled={isSending}
+                            >
+                                {isSending ? (
+                                    <>
+                                        <CircularProgress size={24} sx={{ color: 'white', mr: 1 }} />
+                                        Submitting...
+                                    </>
+                                ) : (
+                                    `Selected (${selectedRows.length})`
+                                )}
+                            </Button>
+                        )}
+                    </div>
+ 
+                    {error && (
+                        <Typography color="error" sx={{ mb: 2, textAlign: 'center' }}>
+                            {error}
+                        </Typography>
+                    )}
+ 
+                    <Typography variant="h5" align="center" sx={{ marginBottom: 2 }}>
                         Candidate Details
                     </Typography>
+ 
                     {loading ? (
                         <Box display="flex" justifyContent="center" alignItems="center" height="100%">
                             <CircularProgress />
-                        </Box>
-                    ) : error ? (
-                        <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-                            <Typography color="error">{error}</Typography>
                         </Box>
                     ) : (
                         <DataGrid
@@ -142,62 +280,66 @@ export default function DataTable() {
                                 '& .MuiDataGrid-row:nth-of-type(even)': {
                                     backgroundColor: '#ffffff',
                                 },
+                                '& .MuiDataGrid-cell:focus': {
+                                    outline: 'none'
+                                }
                             }}
                         />
                     )}
                 </Box>
             </Paper>
-            <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-                <DialogTitle>
+ 
+            <Dialog open={dialogOpen} onClose={handleCloseDialog} fullWidth maxWidth="md">
+                <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     Skills for {selectedResume?.resumefilename}
                     <IconButton
                         aria-label="close"
                         onClick={handleCloseDialog}
-                        sx={{ position: 'absolute', right: 0, top:-5}}
+                        sx={{ position: 'relative', top: 0, right: 0 }}
                     >
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent dividers>
                     {selectedResume && (
                         <div>
-                            <Typography variant="h6">Compatibility Percentage</Typography>
-                            <div className="relative w-full bg-gray-200 rounded-full h-4">
-                                <div
-                                    className="bg-blue-500 h-full rounded-full"
-                                    style={{ width: `${selectedResume.compatibilityPercentage}%` }}
-                                ></div>
-                                <span className="absolute left-1/2 transform -translate-x-1/2 text-sm font-semibold text-white">
-                                    {selectedResume.compatibilityPercentage}%
-                                </span>
-                            </div>
-                            <Typography variant="h6">Must Have Skills</Typography>
-                            <ul className={styles.list}>
-                                {selectedResume.mustHaveSkills.map((skill, index) => (
-                                    <li key={index} className={`flex items-center mb-2`}>
-                                        <span className={`w-3 h-3 rounded-full ${skill.presentInResume === "Yes" ? "bg-green-500" : "bg-red-500"} mr-2`}></span>
-                                        {skill.skill}
-                                    </li>
-                                ))}
-                            </ul>
-                            <Typography variant="h6">Good to Have Skills</Typography>
-                            <ul className={styles.list}>
-                                {selectedResume.goodToHaveSkills.map((skill, index) => (
-                                    <li key={index} className={`flex items-center mb-2`}>
-                                        <span className={`w-3 h-3 rounded-full ${skill.presentInResume === "Yes" ? "bg-green-500" : "bg-red-500"} mr-2`}></span>
-                                        {skill.skill}
-                                    </li>
-                                ))}
-                            </ul>
-                            <Typography variant="h6">Extra Skills</Typography>
-                            <ul className={styles.list}>
-                                {selectedResume.extraSkills.map((skill, index) => (
-                                    <li key={index} className={`flex items-center mb-2`}>
-                                        <span className="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
-                                        {skill.skill}
-                                    </li>
-                                ))}
-                            </ul>
+                            <Box mb={3}>
+                                <Typography variant="h6" gutterBottom>
+                                    Compatibility Percentage
+                                </Typography>
+                                <Box position="relative" height="24px" borderRadius="12px" bgcolor="grey.200">
+                                    <Box
+                                        position="absolute"
+                                        height="100%"
+                                        borderRadius="12px"
+                                        bgcolor="primary.main"
+                                        width={`${selectedResume.compatiblity}%`}
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                    >
+                                        <Typography variant="body2" color="white">
+                                            {selectedResume.compatiblity}%
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            </Box>
+ 
+                            <SkillSection
+                                title="Must Have Skills"
+                                skills={selectedResume.mustHaveSkills}
+                            />
+                           
+                            <SkillSection
+                                title="Good to Have Skills"
+                                skills={selectedResume.goodToHaveSkills}
+                            />
+                           
+                            <SkillSection
+                                title="Extra Skills"
+                                skills={selectedResume.extraSkills}
+                                isExtra
+                            />
                         </div>
                     )}
                 </DialogContent>
@@ -205,3 +347,39 @@ export default function DataTable() {
         </Box>
     );
 }
+ 
+function SkillSection({ title, skills, isExtra = false }: {
+    title: string;
+    skills: Skill[];
+    isExtra?: boolean
+}) {
+    return (
+        <Box mb={3}>
+            <Typography variant="h6" gutterBottom>{title}</Typography>
+            <ul className={styles.list}>
+                {skills.map((skill, index) => (
+                    <li key={index} className="flex items-center mb-2">
+                        <span className={`w-3 h-3 rounded-full mr-2 ${
+                            isExtra ? 'bg-green-500' :
+                            skill.presentInResume === "Yes" ? 'bg-green-500' : 'bg-red-500'
+                        }`}></span>
+                        {skill.skill}
+                        {/* {skill.comment && (
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger className="ml-2">
+                                        <span className="text-gray-500">(?)</span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{skill.comment}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        )} */}
+                    </li>
+                ))}
+            </ul>
+        </Box>
+    );
+}
+ 

@@ -77,6 +77,7 @@ export default function Sidebar({ handlePageChange, isMenuOpen, toggleMenu }: Si
                 <li>
                     <a
                         href="#"
+                        onClick={() => handlePageChange('websocket')}
                         className="flex items-center gap-4 px-4 py-2 rounded-lg hover:bg-gray-300"
                     >
                         <BsBell />

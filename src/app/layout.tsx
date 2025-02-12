@@ -12,6 +12,7 @@ import BatchUpload from './batchUpload/page'; // Importing the Batch Upload comp
 import JobDescription from './jobDescription/page'; // Importing the Job Description component
 import Evaluation from './multistepform/page'; // Importing the Evaluation component
 import DataTable from './DataTable/page'; // Importing the DataTable component
+import WebSocket from './websocket/page';
 
 export default function RootLayout({
   isMenuOpen,
@@ -49,6 +50,9 @@ export default function RootLayout({
         return <Evaluation />;
       case 'dataTable':
         return <DataTable />;
+      case 'websocket':
+        return <WebSocket />;
+
       default:
         return children; // Render default children if no page is selected
     }
