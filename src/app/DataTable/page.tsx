@@ -18,7 +18,7 @@ interface Skill {
 }
  
 interface Resume {
-    jdfilename: string;
+    jdCode: string;
     resumefilename: string;
     candidateEmail: string;
     compatiblity: number;
@@ -75,7 +75,7 @@ export default function DataTable() {
             filterable: false
         },
         { field: 'id', headerName: 'ID', width: 90, headerAlign: 'center', align: 'center'},
-        { field: 'jdfilename', headerName: 'JD Filename', width: 220, headerAlign: 'center', align: 'center' },
+        { field: 'jdCode', headerName: 'JD Code', width: 120, headerAlign: 'center', align: 'center' },
         { field: 'resumefilename', headerName: 'Resume Filename', width: 240, headerAlign: 'center', align: 'center' },
         { field: 'candidateEmail', headerName: 'Candidate Email', width: 220, headerAlign: 'center', align: 'center' },
         { field: 'compatiblity', headerName: 'Compatibility Percentage', type: 'number', width: 200, headerAlign: 'center', align: 'center' },
@@ -168,7 +168,7 @@ export default function DataTable() {
  
     const rows = resumes.map((resume, index) => ({
         id: index + 1,
-        jdfilename: resume.jdfilename,
+        jdCode: resume.jdCode,
         resumefilename: resume.resumefilename,
         candidateEmail: resume.candidateEmail,
         compatiblity: resume.compatiblity,

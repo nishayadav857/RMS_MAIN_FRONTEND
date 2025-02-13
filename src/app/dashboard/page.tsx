@@ -27,7 +27,7 @@ import {
   CardTitle,
 } from "../../components/ui/card"; // Corrected import path
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClipboardCheck, faUserCheck, faChartBar, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faClipboardCheck, faChartBar, faUsers } from '@fortawesome/free-solid-svg-icons';
 
 interface ChartData {
   name: string;
@@ -43,25 +43,28 @@ const Dashboard = () => {
   const [applicantsData, setApplicantsData] = useState<any[]>([]); // State for applicants data
 
   useEffect(() => {
+
     const fetchCandidateStatus = async () => {
       try {
         const response = await fetch('http://localhost:8080/api/hr/candidates/status/count');
         const data = await response.json();
         console.log('API Response:', data); // Log the response to see its structure
 
-        // Transform the object into an array
-        const formattedData = Object.entries(data).map(([status, count]) => ({
-          name: status, // Use the status as the name for the X-axis
-          count: Number(count), // Ensure count is treated as a number
-        }));
+        // Filter data for selected candidates
+        const selectedData = [
+          { name: 'MCQ', count: data['MCQ_SELECTED'] || 0 },
+          { name: 'INTERVIEW', count: data['INTERVIEW_SELECTED'] || 0 },
+          { name: 'SCREEN', count: data['SCREEN_SELECTED'] || 0 }
+        ];
 
-        // Filter data for selected and rejected candidates
-        const selectedStatuses = ['MCQ_SELECTED', 'INTERVIEW_SELECTED', 'SCREEN_SELECTED'];
-        const rejectedStatuses = ['INTERVIEW_REJECTED', 'MCQ_REJECTED', 'SCREEN_REJECTED'];
+        // Filter data for rejected candidates
+        const rejectedData = [
+          { name: 'MCQ', count: data['MCQ_REJECTED'] || 0 },
+          { name: 'INTERVIEW', count: data['INTERVIEW_REJECTED'] || 0 },
+          { name: 'SCREEN', count: data['SCREEN_REJECTED'] || 0 }
+        ];
 
-        const selectedData = formattedData.filter(item => selectedStatuses.includes(item.name));
-        const rejectedData = formattedData.filter(item => rejectedStatuses.includes(item.name));
-
+        // Set the filtered data to the state
         setSelectedChartData(selectedData); // Update the state with the selected data
         setRejectedChartData(rejectedData); // Update the state with the rejected data
       } catch (error) {
@@ -112,7 +115,7 @@ const Dashboard = () => {
 
     fetchCandidateCount();
     fetchCandidateStatus();
-    fetchApplicantsData(); // Call to fetch applicants data
+ fetchApplicantsData(); // Call to fetch applicants data
     fetchLineChartData();
 
   }, []);
@@ -151,7 +154,7 @@ const Dashboard = () => {
         </Card>
         <Card className="w-[210px] h-[130px] bg-purple-500">
           <CardContent className="flex flex-col items-center justify-center h-full text-center p-2 text-white">
-            <FontAwesomeIcon icon={faUserCheck} size="2x" />
+            <FontAwesomeIcon icon={faClipboardCheck} size="2x" />
             <CardTitle>Interview Conducted</CardTitle>
             <h3>5</h3> {/* Hardcoded value */}
           </CardContent>
@@ -175,14 +178,11 @@ const Dashboard = () => {
             <h2>Applicants List</h2> {/* New heading for the applicants table */}
             <div style={{ maxHeight: '400px', overflowY: 'auto', width: '100%', margin: '2vh' }}>
               <Table>
-                {/* <TableCaption>A list of applicants.</TableCaption> */}
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Compatibility</TableHead>
-                    {/* <TableHead>Skills</TableHead>
-              <TableHead>Missing Skills</TableHead>*/}
                     <TableHead>Current Status</TableHead>
                     <TableHead>Job Description Number</TableHead>
                     <TableHead>Job Role</TableHead>
@@ -194,8 +194,6 @@ const Dashboard = () => {
                       <TableCell className="font-medium">{applicant.name}</TableCell>
                       <TableCell>{applicant.__email}</TableCell>
                       <TableCell>{applicant.compatibility}</TableCell>
-                      {/* <TableCell>{applicant.skills.join(', ')}</TableCell>
-                <TableCell>{applicant.missingSkills.join(', ')}</TableCell> */}
                       <TableCell>{applicant.currentStatus}</TableCell>
                       <TableCell>{applicant.jd_number}</TableCell>
                       <TableCell>{applicant.jd_Role}</TableCell>
@@ -210,8 +208,6 @@ const Dashboard = () => {
               </Table> {/* Rendering Shadcn table with applicants data */}
             </div>
           </div>
-
-
         </div>
         <div className={styles.rightSideWrapper}>
           <div className={styles.barGraphsWrapper}>
@@ -224,7 +220,7 @@ const Dashboard = () => {
                   <YAxis dataKey="name" type="category" />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="count" fill="rgba(0,0,255,0.6)" radius={4} barSize={30} />
+                  <Bar dataKey="count" fill="rgba(0,0,255,0.6)" radius={4} barSize={50} />
                 </BarChart>
               </ChartContainer>
 
