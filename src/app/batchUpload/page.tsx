@@ -1,29 +1,27 @@
 'use client';
-
+ 
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify"; // Import ToastContainer
+import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
-// Custom styles for the toast notifications
-import '../../styles/Toastify.css'; // Import your custom styles
-
+ 
 interface FileUpload {
     files: File;
     progress: number;
     status: string;
 }
-
-const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
+ 
+const ResumeUploader = ({ onNext, jobDescriptionName }: { onNext: (data: any) => void, jobDescriptionName: string }) => {
     const [files, setFiles] = useState<FileUpload[]>([]);
     const [uploading, setUploading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-
+    const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state for evaluation
+ 
     const onDrop = (acceptedFiles: File[]) => {
         const pdfFiles = acceptedFiles.filter((file) => file.type === "application/pdf");
         const nonPdfFiles = acceptedFiles.filter((file) => file.type !== "application/pdf");
-
+ 
         if (nonPdfFiles.length) {
             setErrorMessage("Only PDF files are allowed.");
             toast.error("Only PDF files are allowed.", { className: 'custom-toast' });
@@ -31,32 +29,33 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
         } else {
             setErrorMessage("");
         }
-
+ 
         const newFiles = pdfFiles.map((file) => ({
             files: file,
             progress: 0,
             status: "Uploading",
         }));
-
+ 
         if (newFiles.length) setUploading(true);
-
+ 
         setFiles((prev) => [...prev, ...newFiles]);
         uploadAllFiles(newFiles);
     };
-
+ 
     const uploadAllFiles = (fileObjects: FileUpload[]) => {
         const formData = new FormData();
         fileObjects.forEach(fileObj => {
             formData.append("files", fileObj.files);
         });
-
+ 
         axios
-            .post("http://localhost:8080/api/uploadAll", formData, {
+            .post(`http://localhost:8080/api/uploadAll?jobDescriptionFilename=${jobDescriptionName}`
+ , formData, {
                 onUploadProgress: (event) => {
                     const total = event.total || 0;
                     const loaded = event.loaded;
                     const percentage = Math.round((loaded / total) * 100);
-
+ 
                     setFiles((prevFiles) =>
                         prevFiles.map((file) => ({
                             ...file,
@@ -67,7 +66,7 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
             })
             .then((response) => {
                 const existingFiles = response.data.existingFiles;
-
+ 
                 setFiles((prev) =>
                     prev.map((f) => ({
                         ...f,
@@ -75,7 +74,7 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
                         progress: 100
                     }))
                 );
-
+ 
                 if (existingFiles.length) {
                     const toastMessage = (
                         <div style={{ textAlign: 'left' }}>
@@ -87,17 +86,17 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
                             </ul>
                         </div>
                     );
-
+ 
                     toast.warning(toastMessage, { className: 'custom-toast' });
                 } else {
                     toast.success("All resumes uploaded successfully.", { className: 'custom-toast' });
                 }
-
+ 
                 checkIfUploadingComplete();
                 setTimeout(() => {
                     onNext(fileObjects); // Call onNext with the fileObjects
                 }, 2000); // Wait for 2 seconds before navigating
-
+ 
             })
             .catch((error) => {
                 setFiles((prev) =>
@@ -112,16 +111,29 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
                 checkIfUploadingComplete();
             });
     };
-
+ 
     const checkIfUploadingComplete = () => {
         const unfinishedUploads = files.filter((file) => file.status === "Uploading");
         if (!unfinishedUploads.length) setUploading(false);
     };
-
+ 
     const cancelUpload = (fileName: string) => {
         setFiles((prev) => prev.filter((file) => file.files.name !== fileName));
     };
-
+ 
+    const handleEvaluateClick = async () => {
+        setIsLoading(true); // Set loading state to true
+        try {
+            await axios.post(`http://localhost:8080/api/resume-evaluation/evaluate?filename=${jobDescriptionName}`);
+            toast.success('Resume evaluated successfully!');
+        } catch (error: any) {
+            console.error('Error sending filename:', error);
+            toast.error(`Error during evaluation: ${error.message}`);
+        } finally {
+            setIsLoading(false); // Reset loading state
+        }
+    };
+ 
     const { getRootProps, getInputProps, open } = useDropzone({
         onDrop,
         noClick: true,
@@ -130,36 +142,12 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
             'application/pdf': []
         },
     });
-
+ 
     return (
-        <div
-            style={{
-                backgroundColor: "#ffffff",
-                background: '#e8eff9',
-                minHeight: "calc(100vh - 8vh)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "60vw", // Reduced width
-            }}
-        >
-            <div
-                style={{
-                    background: "white",
-                    padding: "30px",
-                    boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-                    maxWidth: "600px",
-                    width: "100%",
-                }}
-            >
-                <h1
-                    style={{
-                        textAlign: "center",
-                        color: "black",
-                        marginBottom: "10px",
-                    }}
-                >
-                    Resume Upload
+        <div>
+            <div className="container mx-auto mt-6">
+                <h1 className="font-semibold text-center text-xl mb-3">
+                    Upload Resume
                 </h1>
                 <hr style={{ color: "black" }} />
                 {errorMessage && (
@@ -169,59 +157,22 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
                 )}
                 <div
                     {...getRootProps()}
-                    style={{
-                        border: "2px dashed grey",
-                        padding: "40px",
-                        textAlign: "center",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        marginBottom: "10px",
-                        position: "relative",
-                    }}
+                    className="border-dashed border-2 border-gray-400 rounded-md p-10 text-center cursor-pointer mb-3 relative"
                 >
                     <input {...getInputProps()} />
                     <div>
                         <div
-                            style={{
-                                fontSize: "50px",
-                                color: "#4caf50",
-                                marginBottom: "10px",
-                                backgroundColor: "white",
-                                width: "60px",
-                                height: "60px",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: "5px",
-                                border: "2px solid #4caf50",
-                                margin: "0 auto",
-                            }}
+                            onClick={open}
+                            className="text-3xl text-green-500 mb-3 w-14 flex justify-center items-center rounded border-2 border-green-500 border-solid mx-auto"
                         >
                             ⬆
                         </div>
                         <p style={{ color: "black" }}>Drag resumes to upload</p>
                     </div>
                 </div>
-                <button
-                    onClick={open}
-                    style={{
-                        backgroundColor: "#4caf50",
-                        color: "#fff",
-                        padding: "10px 20px",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        display: "block",
-                        margin: "0 auto",
-                    }}
-                >
-                    Choose Resume
-                </button>
-
                 {uploading && <h3 style={{ marginTop: "20px" }}>Uploading...</h3>}
-
                 {files.length > 0 && (
-                    <ul style={{ marginTop: "20px", listStyle: "none", padding: 0, color: "black", maxHeight: "200px", overflowY: "auto" }}>
+                    <ul style={{ marginTop: "20px", listStyle: "none", padding: '0px', color: "black", maxHeight: "200px", overflowY: "auto" }}>
                         {files.map((file: FileUpload, index: number): JSX.Element => (
                             <li key={index} style={{ marginBottom: "15px" }}>
                                 <div style={{ display: "flex", alignItems: "center" }}>
@@ -257,10 +208,18 @@ const ResumeUploader = ({ onNext }: { onNext: (data: any) => void }) => {
                         ))}
                     </ul>
                 )}
+                {/* Evaluate Button */}
+                <div style={{ textAlign: "center", marginTop: "20px" }}>
+                    <button onClick={handleEvaluateClick} disabled={isLoading}>
+                        {isLoading ? "Loading..." : 'Evaluate'}
+                    </button>
+                </div>
             </div>
-            <ToastContainer /> {/* Add ToastContainer here */}
+            <ToastContainer />
         </div>
     );
 };
-
+ 
 export default ResumeUploader;
+ 
+ 
