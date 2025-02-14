@@ -19,7 +19,7 @@ interface Skill {
  
 interface Resume {
     jdCode: string;
-    resumefilename: string;
+    name: string;
     candidateEmail: string;
     compatiblity: number;
     mustHaveSkills: Skill[];
@@ -76,9 +76,10 @@ export default function DataTable() {
         },
         { field: 'id', headerName: 'ID', width: 90, headerAlign: 'center', align: 'center'},
         { field: 'jdCode', headerName: 'JD Code', width: 120, headerAlign: 'center', align: 'center' },
-        { field: 'resumefilename', headerName: 'Resume Filename', width: 240, headerAlign: 'center', align: 'center' },
+        { field: 'name', headerName: 'Candidate Name', width: 140, headerAlign: 'center', align: 'center' },
         { field: 'candidateEmail', headerName: 'Candidate Email', width: 220, headerAlign: 'center', align: 'center' },
-        { field: 'compatiblity', headerName: 'Compatibility Percentage', type: 'number', width: 200, headerAlign: 'center', align: 'center' },
+        { field: 'compatiblity', headerName: 'Compatibility %', type: 'number', width: 200, headerAlign: 'center', align: 'center' },
+        { field: 'overallIndustryExperience', headerName: 'Experience (Years)', type: 'number', width: 220, headerAlign: 'center', align: 'center' }
     ];
  
     useEffect(() => {
@@ -169,9 +170,10 @@ export default function DataTable() {
     const rows = resumes.map((resume, index) => ({
         id: index + 1,
         jdCode: resume.jdCode,
-        resumefilename: resume.resumefilename,
+        name: resume.name,
         candidateEmail: resume.candidateEmail,
         compatiblity: resume.compatiblity,
+        overallIndustryExperience: resume.experience?.overallIndustryExperience || 'N/A',
     }));
  
     const handleRowClick = (resume: Resume) => {
@@ -291,7 +293,7 @@ export default function DataTable() {
  
             <Dialog open={dialogOpen} onClose={handleCloseDialog} fullWidth maxWidth="md">
                 <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    Skills for {selectedResume?.resumefilename}
+                    Skills for {selectedResume?.name}
                     <IconButton
                         aria-label="close"
                         onClick={handleCloseDialog}
