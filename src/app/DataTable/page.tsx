@@ -78,8 +78,8 @@ export default function DataTable() {
         { field: 'jdCode', headerName: 'JD Code', width: 120, headerAlign: 'center', align: 'center' },
         { field: 'name', headerName: 'Candidate Name', width: 140, headerAlign: 'center', align: 'center' },
         { field: 'candidateEmail', headerName: 'Candidate Email', width: 220, headerAlign: 'center', align: 'center' },
-        { field: 'compatiblity', headerName: 'Compatibility %', type: 'number', width: 200, headerAlign: 'center', align: 'center' },
-        { field: 'overallIndustryExperience', headerName: 'Experience (Years)', type: 'number', width: 220, headerAlign: 'center', align: 'center' }
+        { field: 'compatiblity', headerName: 'Compatibility %', type: 'number', width: 120, headerAlign: 'center', align: 'center' },
+        { field: 'overallIndustryExperience', headerName: 'Experience (Years)', type: 'number', width: 140, headerAlign: 'center', align: 'center' }
     ];
  
     useEffect(() => {
@@ -191,7 +191,7 @@ export default function DataTable() {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="95vh">
             <Paper sx={{
-                height: 580,
+                height: 500,
                 width: '95%',
                 overflow: 'hidden',
                 borderRadius: 2,
