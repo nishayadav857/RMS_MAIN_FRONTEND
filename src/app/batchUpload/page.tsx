@@ -144,7 +144,7 @@ const ResumeUploader = ({ onNext, jobDescriptionName }: { onNext: (data: any) =>
     });
  
     return (
-        <div>
+        <>
             <div className="container mx-auto mt-6">
                 <h1 className="font-semibold text-center text-xl mb-3">
                     Upload Resume
@@ -213,13 +213,15 @@ const ResumeUploader = ({ onNext, jobDescriptionName }: { onNext: (data: any) =>
                     <button onClick={handleEvaluateClick} disabled={isLoading}>
                         {isLoading ? "Loading..." : 'Evaluate'}
                     </button>
+                    {isLoading && <img src="/images/loading.gif" alt="Loading..." style={{ display: 'block', margin: '20px auto' }} />} {/* Loading GIF */}
                 </div>
-            </div>
+            </div>  
             <ToastContainer />
-        </div>
+        </>
     );
 };
  
 export default ResumeUploader;
+ 
  
  

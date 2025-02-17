@@ -14,6 +14,7 @@ import Evaluation from './multistepform/page'; // Importing the Evaluation compo
 import DataTable from './DataTable/page'; // Importing the DataTable component
 import WebSocket from './websocket/page';
 
+
 export default function RootLayout({
   isMenuOpen,
   children,
@@ -52,6 +53,7 @@ export default function RootLayout({
         return <DataTable />;
       case 'websocket':
         return <WebSocket />;
+      
 
       default:
         return children; // Render default children if no page is selected

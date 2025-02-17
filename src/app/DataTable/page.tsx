@@ -187,7 +187,7 @@ export default function DataTable() {
         setDialogOpen(false);
         setSelectedResume(null);
     };
-
+ 
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="95vh">
             <Paper sx={{
@@ -303,48 +303,68 @@ export default function DataTable() {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent dividers>
-                    {selectedResume && (
-                        <div>
-                            <Box mb={3}>
-                                <Typography variant="h6" gutterBottom>
-                                    Compatibility Percentage
-                                </Typography>
-                                <Box position="relative" height="24px" borderRadius="12px" bgcolor="grey.200">
-                                    <Box
-                                        position="absolute"
-                                        height="100%"
-                                        borderRadius="12px"
-                                        bgcolor="primary.main"
-                                        width={`${selectedResume.compatiblity}%`}
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                    >
-                                        <Typography variant="body2" color="white">
-                                            {selectedResume.compatiblity}%
-                                        </Typography>
-                                    </Box>
-                                </Box>
-                            </Box>
+    {selectedResume && (
+        <div>
+            <Box mb={3}>
+                <Typography variant="h6" gutterBottom>
+                    Compatibility Percentage
+                </Typography>
+                <Box position="relative" height="24px" borderRadius="12px" bgcolor="grey.200">
+                    <Box
+                        position="absolute"
+                        height="100%"
+                        borderRadius="12px"
+                        bgcolor="primary.main"
+                        width={`${selectedResume.compatiblity}%`}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Typography variant="body2" color="white">
+                            {selectedResume.compatiblity}%
+                        </Typography>
+                    </Box>
+                </Box>
+            </Box>
  
-                            <SkillSection
-                                title="Must Have Skills"
-                                skills={selectedResume.mustHaveSkills}
-                            />
-                           
-                            <SkillSection
-                                title="Good to Have Skills"
-                                skills={selectedResume.goodToHaveSkills}
-                            />
-                           
-                            <SkillSection
-                                title="Extra Skills"
-                                skills={selectedResume.extraSkills}
-                                isExtra
-                            />
-                        </div>
-                    )}
-                </DialogContent>
+            <SkillSection
+                title="Must Have Skills"
+                skills={selectedResume.mustHaveSkills}
+            />
+           
+            <SkillSection
+                title="Good to Have Skills"
+                skills={selectedResume.goodToHaveSkills}
+            />
+           
+            <SkillSection
+                title="Extra Skills"
+                skills={selectedResume.extraSkills}
+                isExtra
+            />
+ 
+            {/* New Section for Experience */}
+            <Box mb={3}>
+                <Typography variant="h6" gutterBottom>
+                    Experience
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom>
+                    Overall Industry Experience: {selectedResume.experience.overallIndustryExperience} years
+                </Typography>
+                {selectedResume.experience.companiesWorked.map((company, index) => (
+                    <Box key={index} mb={2}>
+                        <Typography variant="subtitle1">
+                            {company.companyName} - {company.yearsWorked}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            {company.workDetails}
+                        </Typography>
+                    </Box>
+                ))}
+            </Box>
+        </div>
+    )}
+</DialogContent>
             </Dialog>
         </Box>
     );
@@ -384,4 +404,5 @@ function SkillSection({ title, skills, isExtra = false }: {
         </Box>
     );
 }
+ 
  

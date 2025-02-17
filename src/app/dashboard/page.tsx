@@ -30,7 +30,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClipboardCheck, faChartBar, faUsers } from '@fortawesome/free-solid-svg-icons';
 
 interface ChartData {
-  name: string;
+  jdCode: string;
   count: number;
 }
 
@@ -74,7 +74,7 @@ const Dashboard = () => {
 
     const fetchCandidateCount = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/hr/applicants');
+        const response = await fetch('http://localhost:8080/api/resume-evaluation');
         const data = await response.json();
         console.log('API Response:', data);
         setCandidateCount(data.length);
@@ -96,14 +96,16 @@ const Dashboard = () => {
 
     const fetchLineChartData = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/hr/applications/count/jd');
+        // const response = await fetch('http://localhost:8080/api/hr/applications/count/jd');
+        const response = await fetch('http://localhost:8080/api/job-descriptions/jdcode-counts');
+
         const data = await response.json();
         console.log('Line Chart API Response:', data);
 
         // Transform the line chart data into the required format
-        const formattedLineChartData = Object.entries(data).map(([key, value]) => ({
-          name: key, // Use the key as the name for the X-axis
-          count: Number(value), // Ensure value is treated as a number
+        const formattedLineChartData = data.map(item => ({
+          jdCode: item.jdCode, // Use the key as the name for the X-axis
+          count: item.count, // Ensure value is treated as a number
         }));
 
         console.log('Formatted Line Chart Data:', formattedLineChartData); // Log the formatted data
@@ -167,7 +169,7 @@ const Dashboard = () => {
             <h2>Selected Candidates Over Time</h2>
             <br></br>
             <LineChart data={lineChartData} width={600} height={300} margin={{ top: 10, right: 85 }}>
-              <XAxis dataKey="name" />
+              <XAxis dataKey="jdCode" />
               <YAxis />
               <Tooltip />
               <Legend />
@@ -190,7 +192,7 @@ const Dashboard = () => {
                 </TableHeader>
                 <TableBody>
                   {applicantsData.map((applicant) => (
-                    <TableRow key={applicant.__email || applicant.name}>
+                    <TableRow key={applicant.candidateEmail || applicant.name}>
                       <TableCell className="font-medium">{applicant.name}</TableCell>
                       <TableCell>{applicant.__email}</TableCell>
                       <TableCell>{applicant.compatibility}</TableCell>
@@ -220,7 +222,7 @@ const Dashboard = () => {
                   <YAxis dataKey="name" type="category" />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="count" fill="rgba(0,0,255,0.6)" radius={4} barSize={50} />
+                  <Bar dataKey="count" name={"Selected"} fill="rgba(0,0,255,0.6)" radius={4} barSize={50} />
                 </BarChart>
               </ChartContainer>
 
@@ -231,7 +233,7 @@ const Dashboard = () => {
                   <YAxis dataKey="name" type="category" />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="count" fill="rgba(255, 0, 0, 0.6)" radius={4} barSize={30} />
+                  <Bar dataKey="count" name={"Rejected"} fill="rgba(255, 0, 0, 0.6)" radius={4} barSize={30} />
                 </BarChart>
               </ChartContainer>
             </div>
